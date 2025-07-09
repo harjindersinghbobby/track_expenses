@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import AddExpenseForm from '../components/AddExpenseForm';
 import { months, type MonthOption } from '../constants/months';
 import styles from './HomePage.module.css';
@@ -8,7 +8,7 @@ import api from '../services/api';
 type Expense = {
   id: number;
   title: string;
-  amount: number | string;
+  amount: number;
   category: string;
   date: string; // format: YYYY-MM-DD
   isEditing?: boolean;
