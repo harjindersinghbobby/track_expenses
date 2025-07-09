@@ -6,7 +6,7 @@ const expenseRoutes = require('./routes/expenseRoutes');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json()); // Parses JSON request body
 
 app.use('/api/expenses', expenseRoutes);
