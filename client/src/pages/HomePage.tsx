@@ -18,6 +18,7 @@ type Expense = {
   isEditing?: boolean;
 };
 
+
 const HomePage = () => {
   const currentDate = new Date();
   const currentMonth = currentDate.toISOString().slice(0, 7);
