@@ -1,9 +1,14 @@
-import  { useEffect, useState } from 'react';
+import  { useEffect, useRef, useState } from 'react';
 import AddExpenseForm from '../components/AddExpenseForm';
 import { months, type MonthOption } from '../constants/months';
 import styles from './HomePage.module.css';
 import ExpenseChart from '../components/expenseChart';
 import api from '../services/api';
+import { analyzeExpenses } from '../services/ai';
+import { useNavigate } from 'react-router-dom';
+import NavigationBar from '../components/NavigationBar';
+import MonthlyComparison from '../components/MonthyComparison';
+import MonthlyLineChart from '../components/MonthlyLineChart';
 
 type Expense = {
   id: number;
@@ -15,10 +20,19 @@ type Expense = {
 };
 
 const HomePage = () => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.toISOString().slice(0, 7);
   const [filterMonth, setFilterMonth] = useState('');
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  const navigate = useNavigate();
+
+
+
+
+ 
 
   const fetchExpenses = async () => {
     try {
@@ -30,6 +44,12 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+
+    if(!localStorage.getItem('token')) {
+      // Redirect to login or show a message
+      console.error('❌ No token found, redirecting to login');
+      window.location.href = '/login';
+    }
     fetchExpenses();
   }, []);
 
@@ -93,11 +113,11 @@ const handleEditSave = async (indexToEdit: number) => {
     return filteredExpenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
+   const res = await analyzeExpenses(filteredExpenses)
     setLoading(true);
     setTimeout(() => {
-      // Simulated AI analysis
-      setReport('🧠 AI Analysis:\n\n• Most spent: Food\n• Least: Health\n• Avg per item: ₹800');
+      setReport(res);
       setLoading(false);
     }, 1000);
   };
@@ -109,8 +129,11 @@ const handleEditSave = async (indexToEdit: number) => {
     : expenses;
 
   return (
+
+    <>
+      <NavigationBar />
     <div className={styles.container}>
-      <h1 className={styles.heading}>Expense Tracker</h1>
+
 
       <AddExpenseForm onSuccess={fetchExpenses} />
 
@@ -130,13 +153,18 @@ const handleEditSave = async (indexToEdit: number) => {
             ))}
           </select>
         </label>
+        <div className={styles.chartsMonthly}>
+          <div className={styles.chartItem}>
+            <MonthlyComparison selectedMonth={currentMonth} />
+          </div>
+          <div className={styles.chartItem}>
+            <MonthlyLineChart />
+          </div>
+        </div>
       </div>
 
       <h2>Expense List</h2>
-      <p className={styles.total}>Total Spent: ₹{getTotalAmount()}</p>
-      <ExpenseChart data={filteredExpenses} />
-
-      <ul className={styles.list}>
+            <ul className={styles.list}>
         {filteredExpenses.map((expense, index) => (
           <li key={expense.id} className={styles.listItem}>
             <div className={styles.expenseDetails}>
@@ -185,6 +213,10 @@ const handleEditSave = async (indexToEdit: number) => {
           </li>
         ))}
       </ul>
+      <p className={styles.total}>Total Spent: ₹{getTotalAmount()}</p>
+      <ExpenseChart data={filteredExpenses} />
+
+
 
       <button
         onClick={handleAnalyze}
@@ -202,7 +234,7 @@ const handleEditSave = async (indexToEdit: number) => {
           marginTop: '1.5rem',
         }}
       >
-        {loading ? 'Analyzing with AI…' : '💡 Get Smart Insights'}
+        {loading ? 'Analyzing with AI…' : '💡 Analyze It'}
       </button>
 
       {report && (
@@ -223,6 +255,7 @@ const handleEditSave = async (indexToEdit: number) => {
         </div>
       )}
     </div>
+     </>
   );
 };
 

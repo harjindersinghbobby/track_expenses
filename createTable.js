@@ -3,7 +3,15 @@ const pool = require('./db');
 pool.connect()
   .then(() => {
     console.log('✅ Connected to PostgreSQL');
-
+    pool.query(`ALTER TABLE expenses
+ADD COLUMN user_id INTEGER REFERENCES users(id);`);
+return pool.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL
+  );
+  `);
     return pool.query(`
       CREATE TABLE IF NOT EXISTS expenses (
         id SERIAL PRIMARY KEY,
@@ -22,3 +30,6 @@ pool.connect()
     console.error('❌ Error creating table:', err);
     process.exit(1);
   });
+
+
+
