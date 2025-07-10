@@ -8,7 +8,7 @@ import { analyzeExpenses } from '../services/ai';
 import NavigationBar from '../components/NavigationBar';
 import MonthlyComparison from '../components/MonthyComparison';
 import MonthlyLineChart from '../components/MonthlyLineChart';
-
+import { useNavigate } from 'react-router-dom';
 type Expense = {
   id: number;
   title: string;
@@ -25,6 +25,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const navigate = useNavigate();
   const fetchExpenses = async () => {
     try {
       const response = await api.get('/expenses');
@@ -34,14 +35,17 @@ const HomePage = () => {
     }
   };
 
+
   useEffect(() => {
 
     if(!localStorage.getItem('token')) {
       // Redirect to login or show a message
       console.error('❌ No token found, redirecting to login');
-      window.location.href = '/login';
-    }
+     navigate('/login')
+    }else {
     fetchExpenses();
+
+    }
   }, []);
 
   const handleDelete = async (id: number) => {
