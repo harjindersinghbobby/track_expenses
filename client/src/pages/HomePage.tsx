@@ -1,11 +1,10 @@
-import  { useEffect, useRef, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import AddExpenseForm from '../components/AddExpenseForm';
 import { months, type MonthOption } from '../constants/months';
 import styles from './HomePage.module.css';
 import ExpenseChart from '../components/expenseChart';
 import api from '../services/api';
 import { analyzeExpenses } from '../services/ai';
-import { useNavigate } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
 import MonthlyComparison from '../components/MonthyComparison';
 import MonthlyLineChart from '../components/MonthlyLineChart';
@@ -26,14 +25,6 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
-
-  const navigate = useNavigate();
-
-
-
-
- 
-
   const fetchExpenses = async () => {
     try {
       const response = await api.get('/expenses');
