@@ -17,14 +17,15 @@ router.post('/analyze', async (req, res) => {
       .join('\n');
 
     const prompt = `
-Here are my expenses:
-${expenseList}
 
 Please analyze and tell me:
-- My highest spending category
-- My lowest spending category
-- Total spending
-- Suggestions to save money
+ Here are my expenses:
+ ${expenseList}
+ 1. Spending Category
+   a. My highest spending category
+   b. My lowest spending category
+   c.  Total spending
+2. Suggestions to save money, make sure given suggestions do not contain extra 2,3 lines, use bold for each title heading
 `;
 
 const { candidates } = await ai.models.generateContent({

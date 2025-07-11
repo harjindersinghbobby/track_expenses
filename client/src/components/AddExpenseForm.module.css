@@ -28,3 +28,56 @@
 .button:hover {
   background-color: #2563eb;
 }
+
+@media screen and (max-width: 600px) {
+  .formContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input {
+    width: 100%;
+  }
+
+  .button {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  
+}
+
+@media screen and (min-width: 600px) {
+  .formContainer {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .input {
+    width: auto;
+    flex: 1;
+  }
+
+  .button {
+    width: auto;
+    margin-left: 0.5rem;
+  }
+  
+}
+
+@media screen and (min-width: 900px) {
+  .formContainer {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .input {
+    width: auto;
+    flex: 1;
+  }
+
+  .button {
+    width: auto;
+    margin-left: 0.5rem;
+  }
+  
+}

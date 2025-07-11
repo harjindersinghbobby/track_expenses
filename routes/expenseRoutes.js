@@ -7,6 +7,58 @@ router.use(authMiddleware);
 
 // POST /api/expenses
 
+router.get('/weekly', async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const result = await pool.query(
+      `
+     SELECT 
+  TO_CHAR(DATE_TRUNC('week', date), 'Mon DD') AS week_start,
+  TO_CHAR(DATE_TRUNC('week', date) + interval '6 days', 'Mon DD') AS week_end,
+  SUM(amount)::numeric(10,2) AS total
+FROM expenses
+WHERE user_id = $1
+  AND date >= CURRENT_DATE - INTERVAL '8 weeks'
+GROUP BY week_start, week_end
+ORDER BY week_start ASC
+      `,
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Failed to fetch weekly expenses:', err);
+    res.status(500).json({ error: 'Failed to fetch weekly data' });
+  }
+});
+
+
+router.get('/daily', async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const result = await pool.query(
+      `
+      SELECT 
+        TO_CHAR(date, 'YYYY-MM-DD') AS day,
+        SUM(amount)::numeric(10,2) AS total
+      FROM expenses
+      WHERE user_id = $1
+      GROUP BY day
+      ORDER BY day DESC
+      `,
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Failed to fetch daily expenses:', err);
+    res.status(500).json({ error: 'Failed to fetch daily expenses' });
+  }
+});
+
+
 router.get('/monthly-summary', async (req, res) => {
   const userId = req.user.id;
 
@@ -72,7 +124,13 @@ router.get('/compare', async (req, res) => {
 });
 
 router.get('/all-expenses', async (req, res) => {
-  const result = await pool.query('SELECT * FROM expenses ORDER BY date DESC');
+   const result = await pool.query(
+      `SELECT id, title, amount, category, TO_CHAR(date, 'YYYY-MM-DD') as date 
+       FROM expenses 
+       WHERE user_id = $1 
+       ORDER BY date DESC`,
+      [req.user.id]
+    );
   res.json(result.rows);
 });
 
@@ -82,10 +140,14 @@ router.get('/all-users', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { title, amount, category, date } = req.body;
+  const { title, amount, category } = req.body;
 const userId = req.user.id;
 
+let { date } = req.body;
 
+if (date) {
+  date = new Date(date).toISOString().split('T')[0]; // Format to YYYY-MM-DD
+}
   try {
  
     const result = await pool.query(
@@ -104,10 +166,13 @@ const userId = req.user.id;
 
 router.get('/', async (req, res) => {
   try {
-   const result = await pool.query(
-  'SELECT * FROM expenses WHERE user_id = $1 ORDER BY date DESC',
-  [req.user.id]
-);
+ const result = await pool.query(
+      `SELECT id, title, amount, category, TO_CHAR(date, 'YYYY-MM-DD') as date 
+       FROM expenses 
+       WHERE user_id = $1 
+       ORDER BY date DESC`,
+      [req.user.id]
+    );
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('❌ Error fetching expenses:', error);
@@ -132,7 +197,13 @@ router.delete('/:id', async (req, res) => {
 // PUT /api/expenses/:id
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { title, amount, category, date } = req.body;
+  const { title, amount, category } = req.body;
+  let { date } = req.body;
+
+if (date) {
+  
+  date = new Date(date).toISOString().split('T')[0]; // Format to YYYY-MM-DD
+}
 
   try {
 const result = await pool.query(

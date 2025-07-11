@@ -36,7 +36,7 @@
 }
 
 .listItem {
-  background: white;
+  background: rgb(241, 240, 240);
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -174,5 +174,148 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .chartContainer {
+    padding: 1rem;
+    width: 100%;
+  }
+}
+
+/* // modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(36, 36, 36, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #f3f4f6;
+  border-radius: 16px;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  padding: 1.5rem;
+  max-width: 90vw;
+  width: 800px;
+  max-height: 90vh;         /* Ensure modal never exceeds viewport */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.1rem;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #374151;
+  cursor: pointer;
+  margin-left: 1rem;
+  transition: color 0.2s;
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+.closeButton:hover {
+  color: #ef4444;
+}
+
+.modalBody {
+  font-size: 1rem;
+  overflow-y: auto;
+  flex: 1;                  /* Take remaining space, scroll if needed */
+}
+
+@media (max-width: 600px) {
+  .modalContent {
+    width: 95vw;
+    padding: 1rem;
+    font-size: 0.95rem;
+    max-height: 95vh;
+  }
+  .modalTitle {
+    font-size: 1rem;
+  }
+  .closeButton {
+    font-size: 1.5rem;
+  }
+}
+
+/* ...existing modal styles... */
+/* Even smaller modal body styles */
+.modalBody h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: #1f2937;
+}
+
+.modalBody ul {
+  margin-bottom: 0.7rem;
+  padding-left: 0.7rem;
+}
+
+.modalBody li {
+  margin-bottom: 0.12rem;
+  line-height: 1.15;
+  font-size: 0.78rem;
+}
+
+.modalBody p {
+  margin-bottom: 0.4rem;
+  line-height: 1.2;
+  font-size: 0.82rem;
+}
+
+/* Make the first category summary even more compact */
+.modalBody ul:first-of-type {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.modalBody ul:first-of-type li {
+  font-size: 0.75rem;
+  margin-bottom: 0.08rem;
+  line-height: 1.1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .modalContent {
+    width: 99vw;
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    max-height: 97vh;
+  }
+  .modalBody h3 {
+    font-size: 0.8rem;
+  }
+  .modalBody li,
+  .modalBody ul:first-of-type li {
+    font-size: 0.7rem;
+  }
+  .modalBody p {
+    font-size: 0.78rem;
   }
 }

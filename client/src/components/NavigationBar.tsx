@@ -1,8 +1,11 @@
 import  { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './NavigationBar.module.css';
-
-const NavigationBar = () => {
+type Props = {
+  onReload?: () => void;
+  handleAnalyze?: () => void;
+};
+const NavigationBar = ({handleAnalyze,onReload}: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -31,6 +34,20 @@ const NavigationBar = () => {
       <div className={styles.title}>💰 Expense Tracker</div>
 
       <div className={styles.menuWrapper}>
+        <button
+          className={styles.reloadIcon}
+          title="Reload Data"
+          onClick={() => onReload && onReload()}
+        >
+          🔄
+        </button>
+           <button
+          className={styles.aiIcon}
+          title="Analyze with AI"
+          onClick={() => handleAnalyze && handleAnalyze()}
+        >
+          🤖
+        </button>
         <button onClick={toggleMenu} className={styles.menuIcon}>
           ☰
         </button>
