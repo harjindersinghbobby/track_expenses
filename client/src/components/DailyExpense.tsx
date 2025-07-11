@@ -1,5 +1,5 @@
 // components/DailyExpenseChart.tsx
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,AreaChart,Area } from 'recharts';
+import {  XAxis, YAxis, Tooltip, ResponsiveContainer,AreaChart,Area } from 'recharts';
 
 type Props = {
   data: { day: string; total: string }[];

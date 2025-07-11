@@ -1,8 +1,6 @@
-import  { useEffect, useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
-import api from '../services/api';
 
 type MonthData = {
   month: string;
